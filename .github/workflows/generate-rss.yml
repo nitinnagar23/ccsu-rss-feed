@@ -2,12 +2,7 @@ name: Generate RSS Feed
 
 on:
   schedule:
-    # Runs every 30 minutes.
-    # The '*/30' in the minute field means "every 30th minute".
-    # The '*' in the hour, day of month, month, and day of week fields
-    # means "every hour", "every day of the month", "every month", and "every day of the week".
-    # So, this translates to "at minute 0 and minute 30 of every hour, every day."
-    - cron: '*/30 * * * *'
+    - cron: '*/30 * * * *' # Runs every 30 minutes
   workflow_dispatch: # Allows manual triggering
 
 jobs:
@@ -29,6 +24,9 @@ jobs:
           pip install requests beautifulsoup4 lxml
 
       - name: Run Scraper and Generate RSS
+        # FIX: Change the path here. The script is in the 'scripts' folder,
+        # which is at the root level of your checked-out repository.
+        # So, the path is simply 'scripts/ccsu_scraper.py'
         run: python scripts/ccsu_scraper.py
 
       - name: Commit and Push changes
@@ -37,5 +35,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ccsu_news_feed.xml
           git diff --quiet --exit-code || git commit -m "Automated RSS feed update"
-          git push           
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push
+        env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
