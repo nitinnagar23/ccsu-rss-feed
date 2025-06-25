@@ -27,7 +27,7 @@ jobs:
         # FIX: Change the path here. The script is in the 'scripts' folder,
         # which is at the root level of your checked-out repository.
         # So, the path is simply 'scripts/ccsu_scraper.py'
-        run: python scripts/ccsu_scraper.py
+        run: python ccsu-rss-feeds/scripts/ccsu_scraper.py
 
       - name: Commit and Push changes
         run: |
