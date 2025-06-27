@@ -1,40 +1,36 @@
-name: Generate RSS Feed
+name: Update RSS Feed
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # Runs every 30 minutes
-  workflow_dispatch: # Allows manual triggering
+    - cron: '*/30 * * * *'  # Runs every 30 minutes
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 lxml
+          pip install requests beautifulsoup4 feedgen
 
-      - name: Run Scraper and Generate RSS
-        # FIX: Change the path here. The script is in the 'scripts' folder,
-        # which is at the root level of your checked-out repository.
-        # So, the path is simply 'scripts/ccsu_scraper.py'
-        run: python ccsu-rss-feeds/scripts/ccsu_scraper.py
+      - name: Run Script
+        run: python generate_rss.py
 
-      - name: Commit and Push changes
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ccsu_news_feed.xml
-          git diff --quiet --exit-code || git commit -m "Automated RSS feed update"
-          git push
+      - name: Commit and Push
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_URL: https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add ccs-feed.xml
+          git diff --cached --quiet || git commit -m "Auto update RSS feed"
+          git push "$REPO_URL" HEAD:main
