@@ -23,7 +23,7 @@ jobs:
           pip install requests beautifulsoup4 feedgen
 
       - name: Run Script
-        run: python generate_rss.py
+        run: python .github/scrpts/generate_rss.py
 
       - name: Commit and Push
         env:
