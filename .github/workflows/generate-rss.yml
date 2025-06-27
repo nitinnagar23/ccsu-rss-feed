@@ -23,7 +23,7 @@ jobs:
           pip install requests beautifulsoup4 feedgen
 
       - name: Run Script
-        run: python .github/scripts/ccsu_scraper.py
+        run: python ccsu_scraper.py
 
       - name: Commit and Push
         env:
